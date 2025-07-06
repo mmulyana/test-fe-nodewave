@@ -15,3 +15,12 @@ export type RegisterContent = {
 	user: User
 	token: string
 }
+
+export type Todo = {
+	id: string
+	item: string
+	isDone: boolean
+	userId: string
+	createdAt: string
+	updatedAt: string
+}
