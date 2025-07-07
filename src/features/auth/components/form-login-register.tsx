@@ -8,6 +8,7 @@ import { useUserContext } from '@/shared/stores/use-context'
 import FloatingInput from '@/shared/components/input-float'
 
 import { useLoginRegister } from '../hooks/use-login-register'
+import ShowPassword from '@/shared/components/show-password'
 
 export default function FormLoginRegister({
 	variant = 'login',
@@ -18,6 +19,9 @@ export default function FormLoginRegister({
 	const { setUser } = useUserContext()
 	const router = useRouter()
 
+	const [showPassword, setShowPassword] = useState(true)
+	const [showConfirmPassword, setShowConfirmPassword] = useState(true)
+
 	const [form, setForm] = useState({
 		email: '',
 		password: '',
@@ -27,7 +31,7 @@ export default function FormLoginRegister({
 		phoneCountryCode: '',
 		country: '',
 		confirmPassword: '',
-		about: 'Hello my name...',
+		about: '',
 	})
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +78,7 @@ export default function FormLoginRegister({
 	return (
 		<div className='flex flex-col items-center justify-center w-full h-full p-5'>
 			<div className='space-y-2.5 mb-10'>
-				<h1 className='text-center text-[#44444F] text-lg md:text-[56px] font-bold'>
+				<h1 className='text-center text-[#44444F] text-lg md:text-2xl font-bold'>
 					{title}
 				</h1>
 				<p className='text-center text-[#92929D]'>{subtitle}</p>
@@ -103,7 +107,7 @@ export default function FormLoginRegister({
 					{!isLogin && (
 						<div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
 							<div className='flex gap-2.5'>
-								<select className='h-full border w-14 rounded'>
+								<select className='h-full border w-14 rounded border-[#50B5FF]'>
 									<option value='+62'>+62</option>
 								</select>
 								<FloatingInput
@@ -112,6 +116,7 @@ export default function FormLoginRegister({
 									onChange={onChange}
 									name='phone'
 									value={form.phone}
+									className='w-full'
 								/>
 							</div>
 							<FloatingInput
@@ -140,6 +145,13 @@ export default function FormLoginRegister({
 							onChange={onChange}
 							value={form.password}
 							name='password'
+							type={showPassword ? 'password' : 'text'}
+							suffix={
+								<ShowPassword
+									open={showPassword}
+									onClick={() => setShowPassword(!showPassword)}
+								/>
+							}
 						/>
 						{!isLogin && (
 							<FloatingInput
@@ -148,13 +160,22 @@ export default function FormLoginRegister({
 								value={form.confirmPassword}
 								onChange={onChange}
 								name='confirmPassword'
+								type={showConfirmPassword ? 'password' : 'text'}
+								suffix={
+									<ShowPassword
+										open={showConfirmPassword}
+										onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+									/>
+								}
 							/>
 						)}
 					</div>
 					{!isLogin && (
-						<div>
+						<div className='flex flex-col gap-2.5'>
 							<label>Tell us about yourself</label>
 							<textarea
+								placeholder='Tell us about yourself'
+								className='w-full text-[#B5B5BE] rounded-md border border-[#E2E2EA] bg-transparent px-3 pt-3 pb-2.5 text-sm outline-none transition-all focus:border-[#50B5FF] placeholder-transparen invalid:focus:border-[#50B5FF] valid:[&:not(:placeholder-shown)]:border-[#50B5FF] valid:text-[#44444F]'
 								name='about'
 								onChange={(e) => setForm({ ...form, about: e.target.value })}
 								value={form.about}

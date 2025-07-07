@@ -12,7 +12,10 @@ type MarkPayload = {
 	action: string
 }
 
-export const useTodos = () => {
+export const useTodos = (params: {
+	isDone?: boolean
+	orderRule?: 'desc' | 'asc'
+}) => {
 	const [todos, setTodos] = useState<Todo[]>([])
 	const [error, setError] = useState<string | null>(null)
 	const [loading, setLoading] = useState(false)
@@ -22,8 +25,18 @@ export const useTodos = () => {
 		setLoading(true)
 		setError(null)
 
+		const filter: any = {}
+
+		if (params.isDone !== undefined) {
+			filter.isDone = params.isDone
+		}
+
 		try {
-			const res = await http.get<{ content: { entries: Todo[] } }>('/todos')
+			const res = await http.get<{ content: { entries: Todo[] } }>(
+				`/todos?filters=${JSON.stringify(
+					filter
+				)}&orderKey=createdAt&orderRule=${params.orderRule || 'desc'}`
+			)
 			setTodos(res.data.content.entries)
 		} catch (err: any) {
 			setError(err.response?.data?.message || 'Failed to fetch todos')
@@ -35,7 +48,7 @@ export const useTodos = () => {
 
 	useEffect(() => {
 		fetchTodos()
-	}, [shouldRefetch])
+	}, [shouldRefetch, params.isDone, params.orderRule])
 
 	const refetch = () => setShouldRefetch(true)
 

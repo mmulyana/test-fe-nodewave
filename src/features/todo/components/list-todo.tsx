@@ -19,12 +19,16 @@ export default function ListTodo({
 							onClick={() =>
 								mark(todo.id, { action: todo.isDone ? 'UNDONE' : 'DONE' })
 							}
+							className='group cursor-pointer'
 						>
 							<Check isDone={todo.isDone} />
 						</button>
 						<span className='text-gray-800'>{todo.item}</span>
 					</div>
-					<button onClick={() => remove(todo.id)} className='text-red-500'>
+					<button
+						onClick={() => remove(todo.id)}
+						className='text-red-500 h-8 w-8 flex justify-center items-center group cursor-pointer bg-red-50 rounded-full'
+					>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							width='24'
@@ -35,7 +39,7 @@ export default function ListTodo({
 							strokeWidth='2'
 							strokeLinecap='round'
 							strokeLinejoin='round'
-							className='icon icon-tabler icons-tabler-outline icon-tabler-x'
+							className='scale-[0.60] group-hover:scale-[0.80]'
 						>
 							<path stroke='none' d='M0 0h24v24H0z' fill='none' />
 							<path d='M18 6l-12 12' />

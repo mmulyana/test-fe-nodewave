@@ -5,11 +5,17 @@ import { useRouter } from 'next/navigation'
 import { getCookie } from '@/shared/utils'
 import { useUserContext } from '../stores/use-context'
 
-type AuthGuardProps = {
+type props = {
 	children: React.ReactNode
+	redirectIfAuthenticatedTo?: string
+	redirectIfUnauthenticatedTo?: string
 }
 
-export const AuthGuard = ({ children }: AuthGuardProps) => {
+export const AuthGuard = ({
+	children,
+	redirectIfAuthenticatedTo,
+	redirectIfUnauthenticatedTo,
+}: props) => {
 	const { user, setUser } = useUserContext()
 	const router = useRouter()
 
@@ -18,21 +24,30 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
 		const storedUser = localStorage.getItem('user')
 
 		if (!token || !storedUser) {
-			router.replace('/login')
+			if (redirectIfUnauthenticatedTo) {
+				router.replace(redirectIfUnauthenticatedTo)
+			}
 			return
 		}
 
 		try {
 			const parsed = JSON.parse(storedUser)
+
 			if (!user) {
 				setUser(parsed)
 			}
+
+			if (redirectIfAuthenticatedTo) {
+				router.replace(redirectIfAuthenticatedTo)
+			}
 		} catch {
-			router.replace('/login')
+			if (redirectIfUnauthenticatedTo) {
+				router.replace(redirectIfUnauthenticatedTo)
+			}
 		}
 	}, [])
 
-	if (!user) return null
+	if (!user && !redirectIfAuthenticatedTo) return null
 
 	return <>{children}</>
 }
